@@ -119,7 +119,7 @@ func main() {
 	withdrawal := common.HexToHash(withdrawalFlag)
 
 	// Ensure exactly one signer method is provided.
-	validateSignerOptions(privateKey, ledger, mnemonic)
+	validateSignerOptions(privateKey, mnemonic, ledger)
 
 	// Create the signer.
 	s, err := signer.CreateSigner(privateKey, mnemonic, hdPath)
@@ -176,15 +176,15 @@ func validateEssentialFlags(rpcFlag, withdrawalFlag string) {
 }
 
 // Validates that exactly one signer method is provided.
-func validateSignerOptions(privateKey string, ledger, mnemonic bool) {
+func validateSignerOptions(privateKey, mnemonic string, ledger bool) {
 	options := 0
 	if privateKey != "" {
 		options++
 	}
-	if ledger {
+	if mnemonic != "" {
 		options++
 	}
-	if mnemonic != "" {
+	if ledger {
 		options++
 	}
 	if options != 1 {
