@@ -5,6 +5,7 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     systems.url = "github:nix-systems/default";
+    foundry.url = "github:shazow/foundry.nix/monthly";
   };
 
   outputs =
@@ -13,14 +14,25 @@
       systems = (import systems);
 
       perSystem =
-        { self', pkgs, ... }:
         {
+          self',
+          pkgs,
+          system,
+          ...
+        }:
+        {
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = [ inputs.foundry.overlay ];
+          };
+
           devShells.default = pkgs.mkShell {
             packages = with pkgs; [
               go
               go-tools
               gopls
               gotools
+              foundry
             ];
           };
 
